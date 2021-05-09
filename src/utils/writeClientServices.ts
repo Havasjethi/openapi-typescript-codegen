@@ -21,7 +21,28 @@ export async function writeClientServices(services: Service[], templates: Templa
     for (const service of services) {
         const file = resolve(outputPath, `${service.name}.ts`);
         const useVersion = service.operations.some(operation => operation.path.includes(VERSION_TEMPLATE_STRING));
+
         const templateResult = templates.exports.service({
+            ...service,
+            httpClient,
+            useUnionTypes,
+            useVersion,
+            useOptions,
+        });
+        await writeFile(file, format(templateResult));
+    }
+}
+
+export async function writeBackendControllers (services: Service[], templates: Templates, outputPath: string, httpClient: HttpClient, useUnionTypes: boolean, useOptions: boolean): Promise<void> {
+    if (templates.exports.controllers === undefined) {
+        throw new Error('Controller template is not defined!');
+    }
+
+    for (const service of services) {
+        const file = resolve(outputPath, `${service.name}.ts`);
+        const useVersion = service.operations.some(operation => operation.path.includes(VERSION_TEMPLATE_STRING));
+
+        const templateResult = templates.exports.controllers({
             ...service,
             httpClient,
             useUnionTypes,

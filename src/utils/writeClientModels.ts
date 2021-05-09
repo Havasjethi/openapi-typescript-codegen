@@ -15,6 +15,8 @@ import { Templates } from './registerHandlebarTemplates';
  * @param useUnionTypes Use union types instead of enums
  */
 export async function writeClientModels(models: Model[], templates: Templates, outputPath: string, httpClient: HttpClient, useUnionTypes: boolean): Promise<void> {
+    const promises: Promise<any>[] = [];
+
     for (const model of models) {
         const file = resolve(outputPath, `${model.name}.ts`);
         const templateResult = templates.exports.model({
@@ -22,6 +24,10 @@ export async function writeClientModels(models: Model[], templates: Templates, o
             httpClient,
             useUnionTypes,
         });
-        await writeFile(file, format(templateResult));
+
+        const fileWrite = writeFile(file, format(templateResult));
+        promises.push(fileWrite);
     }
+
+    await Promise.all(promises);
 }

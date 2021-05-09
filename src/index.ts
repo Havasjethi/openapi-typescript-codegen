@@ -7,6 +7,9 @@ import { isString } from './utils/isString';
 import { postProcessClient } from './utils/postProcessClient';
 import { registerHandlebarTemplates } from './utils/registerHandlebarTemplates';
 import { writeClient } from './utils/writeClient';
+import { Client } from "./client/interfaces/Client";
+import { OpenApi as OpenApiV3 } from "./openApi/v3/interfaces/OpenApi";
+import { OpenApi as OpenApiV2 } from "./openApi/v2/interfaces/OpenApi";
 
 export { HttpClient } from './HttpClient';
 
@@ -61,21 +64,25 @@ export async function generate({
         useOptions,
     });
 
-    switch (openApiVersion) {
-        case OpenApiVersion.V2: {
-            const client = parseV2(openApi);
-            const clientFinal = postProcessClient(client);
-            if (!write) break;
-            await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas, request);
-            break;
-        }
-
-        case OpenApiVersion.V3: {
-            const client = parseV3(openApi);
-            const clientFinal = postProcessClient(client);
-            if (!write) break;
-            await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas, request);
-            break;
-        }
+    const clientFinal = getClient(openApiVersion, openApi);
+    if (write) {
+        await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas, request);
     }
+}
+
+function getClient (openApiVersion: OpenApiVersion, openApi: OpenApiV3 | OpenApiV2): Client {
+    let parsed_client = null;
+
+    switch (openApiVersion) {
+        case OpenApiVersion.V2:
+        case OpenApiVersion.V3:
+            //@ts-ignore
+            parsed_client = parseV3(openApi);
+            break;
+
+        default:
+            throw new Error('Invalid API number');
+    }
+
+    return postProcessClient(parsed_client);
 }

@@ -35,6 +35,7 @@ import xhrGetResponseBody from '../templates/core/xhr/getResponseBody.hbs';
 import xhrGetResponseHeader from '../templates/core/xhr/getResponseHeader.hbs';
 import xhrRequest from '../templates/core/xhr/request.hbs';
 import xhrSendRequest from '../templates/core/xhr/sendRequest.hbs';
+import templateExportController from '../templates/exportController.hbs';
 import templateExportModel from '../templates/exportModel.hbs';
 import templateExportSchema from '../templates/exportSchema.hbs';
 import templateExportService from '../templates/exportService.hbs';
@@ -74,6 +75,7 @@ export interface Templates {
         model: Handlebars.TemplateDelegate;
         schema: Handlebars.TemplateDelegate;
         service: Handlebars.TemplateDelegate;
+        controllers: Handlebars.TemplateDelegate;
     };
     core: {
         settings: Handlebars.TemplateDelegate;
@@ -98,6 +100,7 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
             model: Handlebars.template(templateExportModel),
             schema: Handlebars.template(templateExportSchema),
             service: Handlebars.template(templateExportService),
+            controllers: Handlebars.template(templateExportController),
         },
         core: {
             settings: Handlebars.template(templateCoreSettings),
@@ -108,6 +111,16 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
         },
     };
 
+    d();
+    c();
+    b();
+    a();
+    register_node_client();
+
+    return templates;
+}
+
+function d( ) {
     // Partials for the generations of the models, services, etc.
     Handlebars.registerPartial('exportEnum', Handlebars.template(partialExportEnum));
     Handlebars.registerPartial('exportInterface', Handlebars.template(partialExportInterface));
@@ -136,7 +149,9 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
     Handlebars.registerPartial('typeUnion', Handlebars.template(partialTypeUnion));
     Handlebars.registerPartial('typeIntersection', Handlebars.template(partialTypeIntersection));
     Handlebars.registerPartial('base', Handlebars.template(partialBase));
+}
 
+function c () {
     // Generic functions used in 'request' file @see src/templates/core/request.hbs for more info
     Handlebars.registerPartial('functions/catchErrors', Handlebars.template(functionCatchErrors));
     Handlebars.registerPartial('functions/getFormData', Handlebars.template(functionGetFormData));
@@ -149,8 +164,11 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
     Handlebars.registerPartial('functions/isStringWithValue', Handlebars.template(functionIsStringWithValue));
     Handlebars.registerPartial('functions/isSuccess', Handlebars.template(functionIsSuccess));
     Handlebars.registerPartial('functions/resolve', Handlebars.template(functionResolve));
+}
 
+function b () {
     // Specific files for the fetch client implementation
+
     Handlebars.registerPartial('fetch/getHeaders', Handlebars.template(fetchGetHeaders));
     Handlebars.registerPartial('fetch/getRequestBody', Handlebars.template(fetchGetRequestBody));
     Handlebars.registerPartial('fetch/getResponseBody', Handlebars.template(fetchGetResponseBody));
@@ -158,6 +176,10 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
     Handlebars.registerPartial('fetch/sendRequest', Handlebars.template(fetchSendRequest));
     Handlebars.registerPartial('fetch/request', Handlebars.template(fetchRequest));
 
+
+}
+
+function a () {
     // Specific files for the xhr client implementation
     Handlebars.registerPartial('xhr/getHeaders', Handlebars.template(xhrGetHeaders));
     Handlebars.registerPartial('xhr/getRequestBody', Handlebars.template(xhrGetRequestBody));
@@ -165,14 +187,16 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
     Handlebars.registerPartial('xhr/getResponseHeader', Handlebars.template(xhrGetResponseHeader));
     Handlebars.registerPartial('xhr/sendRequest', Handlebars.template(xhrSendRequest));
     Handlebars.registerPartial('xhr/request', Handlebars.template(xhrRequest));
+}
 
-    // Specific files for the node client implementation
+/**
+ * Specific files for the node client implementation
+ */
+function register_node_client () {
     Handlebars.registerPartial('node/getHeaders', Handlebars.template(nodeGetHeaders));
     Handlebars.registerPartial('node/getRequestBody', Handlebars.template(nodeGetRequestBody));
     Handlebars.registerPartial('node/getResponseBody', Handlebars.template(nodeGetResponseBody));
     Handlebars.registerPartial('node/getResponseHeader', Handlebars.template(nodeGetResponseHeader));
     Handlebars.registerPartial('node/sendRequest', Handlebars.template(nodeSendRequest));
     Handlebars.registerPartial('node/request', Handlebars.template(nodeRequest));
-
-    return templates;
 }
