@@ -30,8 +30,9 @@ const handlebarsPlugin = () => ({
                 strict: true,
                 noEscape: true,
                 preventIndent: true,
-                knownHelpersOnly: true,
+                knownHelpersOnly: false,
                 knownHelpers: {
+                    // This is a manual solution which is not good enough
                     equals: true,
                     notEquals: true,
                     containsSpaces: true,

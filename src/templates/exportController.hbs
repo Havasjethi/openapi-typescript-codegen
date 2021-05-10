@@ -1,1 +1,30 @@
-console.log('Hello world');
+{{>header}}
+
+
+{{#if imports}}
+    {{#each imports}}
+        import type { {{{this}}} } from '../models/{{{this}}}';
+    {{/each}}
+{{/if}}
+import { request as __request } from '../core/request';
+import { Get, Post, Delete, Put, Option, Head, Patch, Method,
+RequestObj, ResponseObj, Next, Body, PathVariable, Param, Query, Cookie,
+Router, Path} from 'havas-express';
+
+
+{{#if @root.useVersion}}
+    import { OpenAPI } from '../core/OpenAPI';
+{{/if}}
+
+@Path('/')
+export class {{{name}}} extends Router {
+
+    {{#each operations}}
+        {{>controller_method_comment}}
+
+        {{>controller_method }}
+
+
+    {{/each}}
+
+}

@@ -1,0 +1,22 @@
+/**
+{{#if deprecated}}
+    * @deprecated
+{{/if}}
+{{#if summary}}
+    * {{{summary}}}
+{{/if}}
+{{#if description}}
+    * {{{description}}}
+{{/if}}
+{{#unless @root.useOptions}}
+    {{#if parameters}}
+        {{#each parameters}}
+            * @param {{{name}}} {{{description}}}
+        {{/each}}
+    {{/if}}
+{{/unless}}
+{{#each results}}
+    * @returns {{{type}}} {{{description}}}
+{{/each}}
+* @throws ApiError
+*/
