@@ -3,7 +3,7 @@ import type { OperationParameters } from './OperationParameters';
 import type { OperationResponse } from './OperationResponse';
 
 export interface Operation extends OperationParameters {
-    service: string;
+    className: string;
     name: string;
     summary: string | null;
     description: string | null;

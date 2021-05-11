@@ -1,7 +1,7 @@
 import type { OpenApi } from '../interfaces/OpenApi';
 import type { OpenApiReference } from '../interfaces/OpenApiReference';
 
-export function getRef<T>(openApi: OpenApi, item: T & OpenApiReference): T {
+export function getRef<T extends OpenApiReference>(openApi: OpenApi, item: T): T {
     if (item.$ref) {
         // Fetch the paths to the definitions, this converts:
         // "#/components/schemas/Form" to ["components", "schemas", "Form"]

@@ -4,6 +4,7 @@ import { getModels } from './parser/getModels';
 import { getServer } from './parser/getServer';
 import { getServices } from './parser/getServices';
 import { getServiceVersion } from './parser/getServiceVersion';
+import { getControllers } from "./parser/getControllers";
 
 /**
  * Parse the OpenAPI specification to a Client model that contains
@@ -15,6 +16,7 @@ export function parse(openApi: OpenApi): Client {
     const server = getServer(openApi);
     const models = getModels(openApi);
     const services = getServices(openApi);
+    const controllers = getControllers(openApi);
 
-    return { version, server, models, services };
+    return { version, server, models, services, controllers };
 }

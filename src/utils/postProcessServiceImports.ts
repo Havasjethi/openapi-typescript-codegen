@@ -12,3 +12,9 @@ export function postProcessServiceImports(service: Service): string[] {
         .sort(sort)
         .filter(name => service.name !== name);
 }
+
+export function postProcessImports(imports: string[]): string[] {
+    return imports
+        .filter(unique)
+        .sort(sort)
+}

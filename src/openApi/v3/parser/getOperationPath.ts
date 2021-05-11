@@ -14,3 +14,17 @@ export function getOperationPath(path: string): string {
         })
         .replace('${apiVersion}', '${OpenAPI.VERSION}');
 }
+
+export function getControllerOperationPath(path: string): string {
+    const x = path
+        .replace(/\{(.*?)\}/g, (_, w: string) => {
+            return `:${getOperationParameterName(w)}`;
+        })
+        // .replace(':apiVersion', '${OpenAPI.VERSION}')
+        // Variable isn't stored anywhere => Cannot infer
+        .replace(':apiVersion', '3')
+    ;
+    console.log({path, res: x});
+
+    return x;
+}

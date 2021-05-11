@@ -112,8 +112,6 @@ function registerMyHelpers() {
                 console.log('Whatta', obj.in);
         }
 
-
-        // console.log('Got this badbody: ', obj);
         return `@${decorator_name}('${property}') ${obj.name}: ${obj.type}`;
     });
     Handlebars.registerHelper('Capital', function (x: string, fn)  {
@@ -139,7 +137,7 @@ function registerCaseGeneration () {
 }
 
 function register_controller_partials () {
-    Handlebars.registerPartial('controller_imports', Handlebars.template(controllerImports));
+    // Handlebars.registerPartial('controller_imports', Handlebars.template(controllerImports));
     Handlebars.registerPartial('controller_method', Handlebars.template(controller_method));
     Handlebars.registerPartial('controller_method_comment', Handlebars.template(controller_method_comment));
 }

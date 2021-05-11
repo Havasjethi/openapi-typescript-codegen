@@ -35,8 +35,8 @@ export function getServices(openApi: OpenApi): Service[] {
 
                     // If we have already declared a service, then we should fetch that and
                     // append the new method to it. Otherwise we should create a new service object.
-                    const service = services.get(operation.service) || {
-                        name: operation.service,
+                    const service = services.get(operation.className) || {
+                        name: operation.className,
                         operations: [],
                         imports: [],
                     };
@@ -44,7 +44,7 @@ export function getServices(openApi: OpenApi): Service[] {
                     // Push the operation in the service
                     service.operations.push(operation);
                     service.imports.push(...operation.imports);
-                    services.set(operation.service, service);
+                    services.set(operation.className, service);
                     break;
             }
         }

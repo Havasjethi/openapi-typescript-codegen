@@ -21,7 +21,7 @@ export function getOperation(openApi: OpenApi, url: string, method: string, op: 
 
     // Create a new operation object for this method.
     const operation: Operation = {
-        service: serviceClassName,
+        className: serviceClassName,
         name: operationName,
         summary: getComment(op.summary),
         description: getComment(op.description),

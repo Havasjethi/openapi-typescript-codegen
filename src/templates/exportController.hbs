@@ -16,7 +16,7 @@ Router, Path} from 'havas-express';
     import { OpenAPI } from '../core/OpenAPI';
 {{/if}}
 
-@Path('/')
+@Path('{{{path}}}')
 export class {{{name}}} extends Router {
 
     {{#each operations}}

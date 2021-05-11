@@ -66,10 +66,10 @@ export async function writeClient(
         promises.push(promise);
     }
 
-    if (true) {
+    if (client.controllers) {
         await rmdir(output_path_controllers);
         await mkdir(output_path_controllers);
-        const promise = writeBackendControllers(client.services, templates, output_path_controllers, httpClient, useUnionTypes, useOptions);
+        const promise = writeBackendControllers(client.controllers, templates, output_path_controllers, httpClient, useUnionTypes, useOptions);
         promises.push(promise);
     }
 

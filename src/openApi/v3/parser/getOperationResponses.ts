@@ -14,7 +14,7 @@ export function getOperationResponses(openApi: OpenApi, responses: OpenApiRespon
     for (const code in responses) {
         if (responses.hasOwnProperty(code)) {
             const responseOrReference = responses[code];
-            const response = getRef<OpenApiResponse>(openApi, responseOrReference);
+            const response = getRef(openApi, responseOrReference);
             const responseCode = getOperationResponseCode(code);
 
             if (responseCode) {
