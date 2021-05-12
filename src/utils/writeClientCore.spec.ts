@@ -1,8 +1,8 @@
 import type { Client } from '../client/interfaces/Client';
 import { HttpClient } from '../HttpClient';
 import { writeFile } from './fileSystem';
-import { Templates } from './registerHandlebarTemplates';
 import { writeClientCore } from './writeClientCore';
+import { test_templates } from "./common_test_files";
 
 jest.mock('./fileSystem');
 
@@ -15,23 +15,7 @@ describe('writeClientCore', () => {
             services: [],
         };
 
-        const templates: Templates = {
-            index: () => 'index',
-            exports: {
-                model: () => 'model',
-                schema: () => 'schema',
-                service: () => 'service',
-            },
-            core: {
-                settings: () => 'settings',
-                apiError: () => 'apiError',
-                apiRequestOptions: () => 'apiRequestOptions',
-                apiResult: () => 'apiResult',
-                request: () => 'request',
-            },
-        };
-
-        await writeClientCore(client, templates, '/', HttpClient.FETCH);
+        await writeClientCore(client, test_templates, '/', HttpClient.FETCH);
 
         expect(writeFile).toBeCalledWith('/OpenAPI.ts', 'settings');
         expect(writeFile).toBeCalledWith('/ApiError.ts', 'apiError');

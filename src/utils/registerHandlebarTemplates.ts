@@ -22,6 +22,7 @@ import { register_partials, register_generic_functions, register_fetch_files, re
 
 export interface Templates {
     index: Handlebars.TemplateDelegate;
+    backend_index: Handlebars.TemplateDelegate;
     exports: {
         model: Handlebars.TemplateDelegate;
         schema: Handlebars.TemplateDelegate;
@@ -48,6 +49,7 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
     // Main templates (entry points for the files we write to disk)
     const templates: Templates = {
         index: Handlebars.template(templateIndex),
+        backend_index: Handlebars.template(templateIndex),
         exports: {
             model: Handlebars.template(templateExportModel),
             schema: Handlebars.template(templateExportSchema),

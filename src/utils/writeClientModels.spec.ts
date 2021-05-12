@@ -3,6 +3,7 @@ import { HttpClient } from '../HttpClient';
 import { writeFile } from './fileSystem';
 import { Templates } from './registerHandlebarTemplates';
 import { writeClientModels } from './writeClientModels';
+import { test_templates } from "./common_test_files";
 
 jest.mock('./fileSystem');
 
@@ -28,23 +29,7 @@ describe('writeClientModels', () => {
             },
         ];
 
-        const templates: Templates = {
-            index: () => 'index',
-            exports: {
-                model: () => 'model',
-                schema: () => 'schema',
-                service: () => 'service',
-            },
-            core: {
-                settings: () => 'settings',
-                apiError: () => 'apiError',
-                apiRequestOptions: () => 'apiRequestOptions',
-                apiResult: () => 'apiResult',
-                request: () => 'request',
-            },
-        };
-
-        await writeClientModels(models, templates, '/', HttpClient.FETCH, false);
+        await writeClientModels(models, test_templates, '/', HttpClient.FETCH, false);
 
         expect(writeFile).toBeCalledWith('/MyModel.ts', 'model');
     });

@@ -1,8 +1,8 @@
 import type { Client } from '../client/interfaces/Client';
 import { HttpClient } from '../HttpClient';
 import { mkdir, rmdir, writeFile } from './fileSystem';
-import { Templates } from './registerHandlebarTemplates';
 import { writeClient } from './writeClient';
+import { test_templates } from "./common_test_files";
 
 jest.mock('./fileSystem');
 
@@ -15,23 +15,13 @@ describe('writeClient', () => {
             services: [],
         };
 
-        const templates: Templates = {
-            index: () => 'index',
-            exports: {
-                model: () => 'model',
-                schema: () => 'schema',
-                service: () => 'service',
-            },
-            core: {
-                settings: () => 'settings',
-                apiError: () => 'apiError',
-                apiRequestOptions: () => 'apiRequestOptions',
-                apiResult: () => 'apiResult',
-                request: () => 'request',
-            },
-        };
-
-        await writeClient(client, templates, './dist', HttpClient.FETCH, false, false, true, true, true, true);
+        await writeClient(client, test_templates, './dist', HttpClient.FETCH, false, false, {
+            exportCore: true,
+            exportServices: true,
+            exportModels: true,
+            exportSchemas: true,
+            exportControllers: false
+        });
 
         expect(rmdir).toBeCalled();
         expect(mkdir).toBeCalled();

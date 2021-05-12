@@ -10,7 +10,7 @@ import { writeClient } from './utils/writeClient';
 import { Client } from "./client/interfaces/Client";
 import { OpenApi as OpenApiV3 } from "./openApi/v3/interfaces/OpenApi";
 import { OpenApi as OpenApiV2 } from "./openApi/v2/interfaces/OpenApi";
-import { GenerationOptions } from "./types/default";
+import { ExportOptions, ExportOptionsMight, GenerationOptions } from "./types/default";
 
 export { HttpClient } from './HttpClient';
 
@@ -23,10 +23,7 @@ export { HttpClient } from './HttpClient';
  * @param httpClient The selected httpClient (fetch or XHR)
  * @param useOptions Use options or arguments functions
  * @param useUnionTypes Use union types instead of enums
- * @param exportCore: Generate core client classes
- * @param exportServices: Generate services
- * @param exportModels: Generate models
- * @param exportSchemas: Generate schemas
+ * @param export_options
  * @param request: Path to custom request file
  * @param write Write the files to disk (true or false)
  */
@@ -36,10 +33,7 @@ export async function generate({
     httpClient = HttpClient.FETCH,
     useOptions = false,
     useUnionTypes = false,
-    exportCore = true,
-    exportServices = true,
-    exportModels = true,
-    exportSchemas = false,
+    export_options = { },
     request,
     write = true,
 }: GenerationOptions): Promise<void> {
@@ -51,10 +45,35 @@ export async function generate({
         useOptions,
     });
 
+    const defined_export_options = fixOptions(export_options);
+
     const clientFinal = getClient(openApiVersion, openApi);
     if (write) {
-        await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas, request);
+        await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, defined_export_options, request);
     }
+}
+
+const fixOptions = (some: ExportOptionsMight): ExportOptions => {
+    let a = {...some};
+
+    if (a.exportCore === undefined) {
+        a.exportCore = true;
+    }
+    if (a.exportServices === undefined) {
+        a.exportServices = true;
+    }
+    if (a.exportModels === undefined) {
+        a.exportModels = true;
+    }
+    if (a.exportSchemas === undefined) {
+        a.exportSchemas = true;
+    }
+    if (a.exportControllers === undefined) {
+        a.exportControllers = true;
+    }
+
+    //@ts-ignore
+    return a;
 }
 
 function getClient (openApiVersion: OpenApiVersion, openApi: OpenApiV3 | OpenApiV2): Client {

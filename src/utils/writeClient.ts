@@ -10,6 +10,7 @@ import { writeClientIndex } from './writeClientIndex';
 import { writeClientModels } from './writeClientModels';
 import { writeClientSchemas } from './writeClientSchemas';
 import { writeBackendControllers, writeClientServices } from './writeClientServices';
+import { ExportOptions } from "../types/default";
 
 /**
  * Write our OpenAPI client, using the given templates at the given output
@@ -19,10 +20,7 @@ import { writeBackendControllers, writeClientServices } from './writeClientServi
  * @param httpClient The selected httpClient (fetch, xhr or node)
  * @param useOptions Use options or arguments functions
  * @param useUnionTypes Use union types instead of enums
- * @param exportCore: Generate core client classes
- * @param exportServices: Generate services
- * @param exportModels: Generate models
- * @param exportSchemas: Generate schemas
+ * @param exportOptions
  * @param request: Path to custom request file
  */
 export async function writeClient(
@@ -32,10 +30,7 @@ export async function writeClient(
     httpClient: HttpClient,
     useOptions: boolean,
     useUnionTypes: boolean,
-    exportCore: boolean,
-    exportServices: boolean,
-    exportModels: boolean,
-    exportSchemas: boolean,
+    exportOptions: ExportOptions,
     request?: string
 ): Promise<void> {
     // Todo :: Configurable folder names
@@ -52,44 +47,45 @@ export async function writeClient(
         throw new Error(`Output folder is not a subdirectory of the current working directory`);
     }
 
-    if (exportCore) {
+    if (exportOptions.exportCore) {
         await rmdir(outputPathCore);
         await mkdir(outputPathCore);
         const promise = writeClientCore(client, templates, outputPathCore, httpClient, request);
         promises.push(promise);
     }
 
-    if (exportServices) {
+    if (exportOptions.exportServices) {
         await rmdir(outputPathServices);
         await mkdir(outputPathServices);
         const promise = writeClientServices(client.services, templates, outputPathServices, httpClient, useUnionTypes, useOptions);
         promises.push(promise);
     }
 
-    if (client.controllers) {
+    if (exportOptions.exportControllers && client.controllers) {
         await rmdir(output_path_controllers);
         await mkdir(output_path_controllers);
         const promise = writeBackendControllers(client.controllers, templates, output_path_controllers, httpClient, useUnionTypes, useOptions);
         promises.push(promise);
     }
 
-    if (exportSchemas) {
+    if (exportOptions.exportControllers) {
         await rmdir(outputPathSchemas);
         await mkdir(outputPathSchemas);
         const promise = writeClientSchemas(client.models, templates, outputPathSchemas, httpClient, useUnionTypes);
         promises.push(promise);
     }
 
-    if (exportModels) {
+    if (exportOptions.exportControllers) {
         await rmdir(outputPathModels);
         await mkdir(outputPathModels);
         const promise = writeClientModels(client.models, templates, outputPathModels, httpClient, useUnionTypes);
         promises.push(promise);
     }
 
-    if (exportCore || exportServices || exportSchemas || exportModels) {
+    if ( exportOptions.exportCore || exportOptions.exportServices
+         || exportOptions.exportSchemas || exportOptions.exportModels) {
         await mkdir(outputPath);
-        const promise = writeClientIndex(client, templates, outputPath, useUnionTypes, exportCore, exportServices, exportModels, exportSchemas);
+        const promise = writeClientIndex(client, templates, outputPath, useUnionTypes, exportOptions);
         promises.push(promise);
     }
 

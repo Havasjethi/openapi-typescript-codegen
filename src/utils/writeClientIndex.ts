@@ -5,6 +5,7 @@ import { writeFile } from './fileSystem';
 import { Templates } from './registerHandlebarTemplates';
 import { sortModelsByName } from './sortModelsByName';
 import { sortServicesByName } from './sortServicesByName';
+import { ExportOptions } from "../types/default";
 
 /**
  * Generate the OpenAPI client index file using the Handlebar template and write it to disk.
@@ -14,33 +15,31 @@ import { sortServicesByName } from './sortServicesByName';
  * @param templates The loaded handlebar templates
  * @param outputPath Directory to write the generated files to
  * @param useUnionTypes Use union types instead of enums
- * @param exportCore: Generate core
- * @param exportServices: Generate services
- * @param exportModels: Generate models
- * @param exportSchemas: Generate schemas
+ * @param exportOptions
  */
 export async function writeClientIndex(
     client: Client,
     templates: Templates,
     outputPath: string,
     useUnionTypes: boolean,
-    exportCore: boolean,
-    exportServices: boolean,
-    exportModels: boolean,
-    exportSchemas: boolean
+    exportOptions: ExportOptions,
 ): Promise<void> {
-    await writeFile(
-        resolve(outputPath, 'index.ts'),
-        templates.index({
-            exportCore,
-            exportServices,
-            exportModels,
-            exportSchemas,
-            useUnionTypes,
-            server: client.server,
-            version: client.version,
-            models: sortModelsByName(client.models),
-            services: sortServicesByName(client.services),
-        })
-    );
+    const output_path = resolve(outputPath, 'index.ts');
+    const context = {
+        exportCore: exportOptions.exportCore,
+        exportServices: exportOptions.exportServices,
+        exportModels: exportOptions.exportModels,
+        exportSchemas: exportOptions.exportSchemas,
+        useUnionTypes,
+        server: client.server,
+        version: client.version,
+        models: sortModelsByName(client.models),
+        services: sortServicesByName(client.services),
+    };
+
+    const index_content = exportOptions.exportControllers
+        ? templates.backend_index(context)
+        : templates.index(context);
+
+    await writeFile(output_path, index_content);
 }
