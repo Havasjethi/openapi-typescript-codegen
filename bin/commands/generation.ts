@@ -82,30 +82,6 @@ export const generation = new Command()
                 console.error(error);
                 process.exit(1);
             });
-
-        // const OpenAPI = require(resolve(__dirname, '../dist/index.js'));
-        //
-        // if (OpenAPI) {
-        //     OpenAPI.generate({
-        //         input: params.input,
-        //         output: params.output,
-        //         httpClient: params.client,
-        //         useOptions: params.useOptions,
-        //         useUnionTypes: params.useUnionTypes,
-        //         exportCore: JSON.parse(params.exportCore) === true,
-        //         exportServices: JSON.parse(params.exportServices) === true,
-        //         exportModels: JSON.parse(params.exportModels) === true,
-        //         exportSchemas: JSON.parse(params.exportSchemas) === true,
-        //         request: params.request,
-        //     })
-        //         .then(() => {
-        //             process.exit(0);
-        //         })
-        //         .catch(error => {
-        //             console.error(error);
-        //             process.exit(1);
-        //         });
-        // }
     });
 
 
