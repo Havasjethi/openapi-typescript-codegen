@@ -10,22 +10,9 @@ import { writeClient } from './utils/writeClient';
 import { Client } from "./client/interfaces/Client";
 import { OpenApi as OpenApiV3 } from "./openApi/v3/interfaces/OpenApi";
 import { OpenApi as OpenApiV2 } from "./openApi/v2/interfaces/OpenApi";
+import { GenerationOptions } from "./types/default";
 
 export { HttpClient } from './HttpClient';
-
-export type Options = {
-    input: string | Record<string, any>;
-    output: string;
-    httpClient?: HttpClient;
-    useOptions?: boolean;
-    useUnionTypes?: boolean;
-    exportCore?: boolean;
-    exportServices?: boolean;
-    exportModels?: boolean;
-    exportSchemas?: boolean;
-    request?: string;
-    write?: boolean;
-};
 
 /**
  * Generate the OpenAPI client. This method will read the OpenAPI specification and based on the
@@ -55,7 +42,7 @@ export async function generate({
     exportSchemas = false,
     request,
     write = true,
-}: Options): Promise<void> {
+}: GenerationOptions): Promise<void> {
     const openApi = isString(input) ? await getOpenApiSpec(input) : input;
     const openApiVersion = getOpenApiVersion(openApi);
     const templates = registerHandlebarTemplates({
