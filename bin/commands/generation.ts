@@ -2,7 +2,25 @@ import { Command } from "commander";
 import { default_config_path, StructuredOptions } from "./from_spec";
 import { existsSync, readFileSync } from "fs";
 import { resolve } from "path";
-import { GenerationOptions } from "../../src/types/default";
+import { HttpClient } from "./FromSpec/generateDefaultConfig";
+
+/**
+ * Copy from src/types/default.src
+ */
+export type GenerationOptions = {
+    input: string | Record<string, any>;
+    output: string;
+    httpClient?: HttpClient;
+    useOptions?: boolean;
+    useUnionTypes?: boolean;
+    exportCore?: boolean;
+    exportServices?: boolean;
+    exportModels?: boolean;
+    exportSchemas?: boolean;
+    request?: string;
+    write?: boolean;
+};
+
 
 const pkg = require('../../package.json');
 

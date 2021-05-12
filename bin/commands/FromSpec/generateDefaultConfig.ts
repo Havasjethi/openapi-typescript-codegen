@@ -1,12 +1,20 @@
-import { writeFile } from "../../../src/utils/fileSystem";
-import { HttpClient } from "../../../src/HttpClient";
+import { writeFileSync } from "fs";
 import { StructuredOptions } from "../from_spec";
+
+/**
+ * Copy of the src/HttpClient.ts file
+ */
+export enum HttpClient {
+    FETCH = 'fetch',
+    XHR = 'xhr',
+    NODE = 'node',
+}
 
 export const generateDefaultConfig = async (path) => {
     console.log('Generating default files to: ', path);
     const default_config = getDefaultConfig();
     const raw_string = JSON.stringify(default_config, undefined, 2);
-    await writeFile(path, raw_string);
+    writeFileSync(path, raw_string, {encoding: "utf8"});
 }
 
 function getDefaultConfig (): StructuredOptions {
