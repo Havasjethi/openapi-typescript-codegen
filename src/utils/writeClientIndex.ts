@@ -6,6 +6,7 @@ import { Templates } from './registerHandlebarTemplates';
 import { sortModelsByName } from './sortModelsByName';
 import { sortServicesByName } from './sortServicesByName';
 import { ExportOptions } from "../types/default";
+import { ImportBuilder } from "./ImportBuilder";
 
 /**
  * Generate the OpenAPI client index file using the Handlebar template and write it to disk.
@@ -24,8 +25,8 @@ export async function writeClientIndex(
     useUnionTypes: boolean,
     exportOptions: ExportOptions,
 ): Promise<void> {
-    const output_path = resolve(outputPath, 'index.ts');
-    const context = {
+    const import_builder = ImportBuilder.create();
+    const context: any = {
         exportCore: exportOptions.exportCore,
         exportServices: exportOptions.exportServices,
         exportModels: exportOptions.exportModels,
@@ -37,9 +38,34 @@ export async function writeClientIndex(
         services: sortServicesByName(client.services),
     };
 
-    const index_content = exportOptions.exportControllers
-        ? templates.backend_index(context)
-        : templates.index(context);
+    let output_path: string;
+    let file_content: string;
 
-    await writeFile(output_path, index_content);
+    if (exportOptions.exportCore) {
+        client.models.forEach(e => import_builder.add_import(e.name, `./models/${e.name}`, 'Model'));
+    }
+    if (exportOptions.exportCore) {
+        client.services.forEach(e => import_builder.add_import(e.name, `./services/${e.name}`, 'Service'));
+    }
+    if (exportOptions.exportCore && client.controllers) {
+        const controller_names = client.controllers.map(e => import_builder.add_import(e.name, `./controllers/${e.name}`, 'Controllers'));
+        context.controller_names = controller_names;
+    }
+
+    if (exportOptions.exportControllers) {
+        output_path = resolve(outputPath, 'backend_index.ts');
+
+        const imports = import_builder
+            .get_imports()
+            .sort((a: any, b: any) => a.file_path.toLowerCase().localeCompare(b.file_path.toLowerCase(), 'en'));
+
+        context['imports'] = imports;
+
+        file_content = templates.backend_index(context);
+    } else {
+        output_path = resolve(outputPath, 'index.ts');
+        file_content = templates.index(context);
+    }
+
+    await writeFile(output_path, file_content);
 }

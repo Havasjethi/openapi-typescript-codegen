@@ -39,15 +39,16 @@ export async function generate({
 }: GenerationOptions): Promise<void> {
     const openApi = isString(input) ? await getOpenApiSpec(input) : input;
     const openApiVersion = getOpenApiVersion(openApi);
+    const defined_export_options = fixOptions(export_options);
     const templates = registerHandlebarTemplates({
         httpClient,
         useUnionTypes,
         useOptions,
+        exportOptions: defined_export_options,
     });
 
-    const defined_export_options = fixOptions(export_options);
-
     const clientFinal = getClient(openApiVersion, openApi);
+
     if (write) {
         await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, defined_export_options, request);
     }

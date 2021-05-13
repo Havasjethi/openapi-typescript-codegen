@@ -11,14 +11,16 @@ import templateExportModel from '../templates/exportModel.hbs';
 import templateExportSchema from '../templates/exportSchema.hbs';
 import templateExportService from '../templates/exportService.hbs';
 import templateIndex from '../templates/index.hbs';
+import backendIndex from '../templates/backendIndex.hbs';
 
-import controllerImports from '../templates/controller_partials/imports.hbs';
+// import controllerImports from '../templates/controller_partials/imports.hbs';
 import controller_method from '../templates/controller_partials/method.hbs';
 import controller_method_comment from '../templates/controller_partials/method_comment.hbs';
 import { registerHandlebarHelpers } from './registerHandlebarHelpers';
 
-import { Operation } from "../client/interfaces/Operation";
 import { register_partials, register_generic_functions, register_fetch_files, register_xmr_files, register_node_client } from "./template_register_methods";
+import { registerCaseGeneration, registerMyHelpers } from "./template_register_methods/registerMyHelpers";
+import { ExportOptions } from "../types/default";
 
 export interface Templates {
     index: Handlebars.TemplateDelegate;
@@ -42,14 +44,15 @@ export interface Templates {
  * Read all the Handlebar templates that we need and return on wrapper object
  * so we can easily access the templates in out generator / write functions.
  */
-export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOptions: boolean; useUnionTypes: boolean }): Templates {
+export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOptions: boolean; useUnionTypes: boolean, exportOptions: ExportOptions }): Templates {
     registerHandlebarHelpers(root);
     registerMyHelpers();
+    registerCaseGeneration();
 
     // Main templates (entry points for the files we write to disk)
     const templates: Templates = {
         index: Handlebars.template(templateIndex),
-        backend_index: Handlebars.template(templateIndex),
+        backend_index: Handlebars.template(backendIndex),
         exports: {
             model: Handlebars.template(templateExportModel),
             schema: Handlebars.template(templateExportSchema),
@@ -76,66 +79,6 @@ export function registerHandlebarTemplates(root: { httpClient: HttpClient; useOp
     register_node_client();
 
     return templates;
-}
-
-function registerMyHelpers() {
-    Handlebars.registerHelper('MethodInput', function (obj: Operation['parameters'][0]): string  {
-        let decorator_name = '';
-        let property = '';
-
-        switch (obj.in) {
-            case 'path':
-                decorator_name = 'PathVariable';
-                property = obj.prop;
-                break;
-
-
-            case 'query':
-                decorator_name = 'Query';
-                property = obj.name;
-                break;
-
-            case 'header':
-                decorator_name = 'Header';
-                break;
-
-            case 'formData':
-            case 'body':
-                decorator_name = 'Body';
-                property = obj.prop;
-                break;
-
-            case "cookie":
-                decorator_name = 'Body';
-                property = obj.prop;
-                break;
-
-            default:
-                console.log('Whatta', obj.in);
-        }
-
-        return `@${decorator_name}('${property}') ${obj.name}: ${obj.type}`;
-    });
-    Handlebars.registerHelper('Capital', function (x: string, fn)  {
-        const head = x.charAt(0).toUpperCase();
-        const tail = x.slice(1).toLowerCase();
-
-        return head + tail;
-    });
-
-    Handlebars.registerHelper('Lower', function (c: any, x: any) {
-        return x.toLowerCase();
-    });
-
-    Handlebars.registerHelper('Upper', function (c: any, x: any) {
-        return x.toUpperCase();
-    });
-
-}
-
-function registerCaseGeneration () {
-    const case_types = ['snake_case', 'kabob-case', 'PascalCase', 'camelCase', 'UPPER_CAMEL'];
-    const main_types = ['Class', 'Method', 'MethodVariable', 'Variable', 'Enums', 'EnumVariable']
 }
 
 function register_controller_partials () {

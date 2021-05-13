@@ -9,8 +9,9 @@ import { writeClientCore } from './writeClientCore';
 import { writeClientIndex } from './writeClientIndex';
 import { writeClientModels } from './writeClientModels';
 import { writeClientSchemas } from './writeClientSchemas';
-import { writeBackendControllers, writeClientServices } from './writeClientServices';
+import { writeClientServices } from './writeClientServices';
 import { ExportOptions } from "../types/default";
+import { writeBackendControllers } from "./writeBackendControllers";
 
 /**
  * Write our OpenAPI client, using the given templates at the given output
@@ -68,14 +69,14 @@ export async function writeClient(
         promises.push(promise);
     }
 
-    if (exportOptions.exportControllers) {
+    if (exportOptions.exportSchemas) {
         await rmdir(outputPathSchemas);
         await mkdir(outputPathSchemas);
         const promise = writeClientSchemas(client.models, templates, outputPathSchemas, httpClient, useUnionTypes);
         promises.push(promise);
     }
 
-    if (exportOptions.exportControllers) {
+    if (exportOptions.exportModels) {
         await rmdir(outputPathModels);
         await mkdir(outputPathModels);
         const promise = writeClientModels(client.models, templates, outputPathModels, httpClient, useUnionTypes);
