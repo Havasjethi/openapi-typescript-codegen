@@ -1,8 +1,8 @@
 import { Command } from "commander";
 import { default_config_path, StructuredOptions } from "./from_spec";
 import { existsSync, readFileSync } from "fs";
-import { resolve } from "path";
 import { HttpClient } from "./FromSpec/generateDefaultConfig";
+import { getOpenApi } from "../index";
 
 /**
  * Copy from src/types/default.src
@@ -73,7 +73,7 @@ export const generation = new Command()
             throw new Error('DEFINE PLS');
         }
 
-        const OpenAPI = require(resolve(__dirname, '../../dist/index.js'));
+        const OpenAPI = getOpenApi();
         OpenAPI.generate(generation_setting)
             .then(() => {
                 process.exit(0);

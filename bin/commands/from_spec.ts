@@ -1,5 +1,7 @@
 import { Command } from "commander";
 import { generateDefaultConfig } from "./FromSpec/generateDefaultConfig";
+import { getOpenApi } from "../index";
+import { readFileSync } from "fs";
 
 const file_name = 'oas-config';
 export const default_config_path = `./${file_name}.json`;
@@ -36,11 +38,28 @@ export const FromSpec = new Command()
         if (generate) {
             await generateDefaultConfig(path);
         } else {
-            analyzeControllers();
+            const api = getOpenApi();
+            const options = getScanOptions(path);
+            api.scan(options);
         }
     });
 
 
-function analyzeControllers() {
+function getScanOptions(config_path: string): ScanOptions {
+    const file = readFileSync(config_path, {encoding: "utf8"});
+    const parsed: StructuredOptions = JSON.parse(file);
 
+    return {
+        folders: {
+            base_folder: parsed.output,
+            controller_folder: 'controllers',
+        }
+    };
+}
+
+export interface ScanOptions {
+    folders: {
+        base_folder: string,
+            controller_folder: string,
+    }
 }

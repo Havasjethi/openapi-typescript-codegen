@@ -11,6 +11,8 @@ import { Client } from "./client/interfaces/Client";
 import { OpenApi as OpenApiV3 } from "./openApi/v3/interfaces/OpenApi";
 import { OpenApi as OpenApiV2 } from "./openApi/v2/interfaces/OpenApi";
 import { ExportOptions, ExportOptionsMight, GenerationOptions } from "./types/default";
+import { ScanOptions } from "./scan_files/types";
+import { scan_method } from "./scan_files/method";
 
 export { HttpClient } from './HttpClient';
 
@@ -52,6 +54,10 @@ export async function generate({
     if (write) {
         await writeClient(clientFinal, templates, output, httpClient, useOptions, useUnionTypes, defined_export_options, request);
     }
+}
+
+export function scan(options: ScanOptions) {
+    scan_method(options);
 }
 
 const fixOptions = (some: ExportOptionsMight): ExportOptions => {
